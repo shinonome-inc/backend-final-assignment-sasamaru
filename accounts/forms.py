@@ -9,6 +9,7 @@ class SignupForm(UserCreationForm):
         model = User  # model = get_user_model() は NG
         fields = ("username", "email")
 
+
 # password1, password2というフィールドはUserCreationFormの方で設定されているため、
 # fieldsの欄には、Userモデルの中にある、
 # blankにはできない値であるusernameとemailをセットする。
