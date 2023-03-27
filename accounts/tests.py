@@ -106,7 +106,11 @@ class TestSignupView(TestCase):
         }
         response = self.client.post(self.url, duplicated_user_data)
         # 入力したデータが作成されていることを確かめる
-        self.assertTrue(User.objects.filter(username=duplicated_user_data["username"],).exists())
+        self.assertTrue(
+            User.objects.filter(
+                username=duplicated_user_data["username"],
+            ).exists()
+            )
         response = self.client.post(self.url, duplicated_user_data)
 
         self.assertEqual(User.objects.all().count(), 1)
