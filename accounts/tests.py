@@ -110,7 +110,7 @@ class TestSignupView(TestCase):
             User.objects.filter(
                 username=duplicated_user_data["username"],
             ).exists()
-            )
+        )
         response = self.client.post(self.url, duplicated_user_data)
 
         self.assertEqual(User.objects.all().count(), 1)
@@ -199,6 +199,7 @@ class TestHomeView(TestCase):
     def test_success_get(self):
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+
 
 # class TestLoginView(TestCase):
 #     def test_success_get(self):
