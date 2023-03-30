@@ -62,7 +62,7 @@ class TestSignupView(TestCase):
         form = response.context["form"]
 
         self.assertEqual(response.status_code, 200)
-        self.assertFalse(User.objects.filter(username=empty_user_data["username"]).exists())
+        self.assertEqual(User.objects.all().count(), 0)
         self.assertFalse(form.is_valid())
         self.assertIn("このフィールドは必須です。", form.errors["username"])
 
@@ -91,6 +91,7 @@ class TestSignupView(TestCase):
         response = self.client.post(self.url, empty_password_data)
         form = response.context["form"]
 
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(User.objects.all().count(), 0)
         self.assertFalse(form.is_valid())
         self.assertIn("このフィールドは必須です。", form.errors["password1"])
@@ -105,12 +106,12 @@ class TestSignupView(TestCase):
             "password2": "testpassword",
         }
         response = self.client.post(self.url, duplicated_user_data)
-        # 入力したデータが作成されていることを確かめる
-        self.assertTrue(
-            User.objects.filter(
-                username=duplicated_user_data["username"],
-            ).exists()
-        )
+        # # 入力したデータが作成されていることを確かめる
+        # self.assertTrue(
+        #     User.objects.filter(
+        #         username=duplicated_user_data["username"],
+        #     ).exists()
+        # )
         response = self.client.post(self.url, duplicated_user_data)
 
         self.assertEqual(User.objects.all().count(), 1)
@@ -141,7 +142,6 @@ class TestSignupView(TestCase):
             "password2": "short",
         }
         response = self.client.post(self.url, too_short_password_data)
-        print(response)
         form = response.context["form"]
         self.assertEqual(response.status_code, 200)
         self.assertEqual(User.objects.all().count(), 0)
