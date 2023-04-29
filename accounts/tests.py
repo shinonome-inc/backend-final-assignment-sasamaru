@@ -272,9 +272,7 @@ class TestUserProfileView(TestCase):
         self.client.login(username="testuser", password="testpassword")
 
     def test_success_get(self):
-        response = self.client.get(
-            reverse("accounts:user_profile", kwargs={"username": "testuser"})
-        )
+        response = self.client.get(reverse("accounts:user_profile", kwargs={"username": "testuser"}))
         self.assertEqual(response.status_code, 200)
 
 
