@@ -197,7 +197,7 @@ class TestHomeView(TestCase):
 
 class TestLoginView(TestCase):
     def setUp(self):
-        User.objects.create_user(username="testuser", email="test@test.com", password="testpassword")
+        User.objects.create_user(username="testuser", password="testpassword")
         self.url = reverse("accounts:login")
 
     def test_success_get(self):
@@ -251,7 +251,7 @@ class TestLoginView(TestCase):
 
 class TestLogoutView(TestCase):
     def setUp(self):
-        User.objects.create_user(username="testuser", email="test@test.com", password="testpassword")
+        User.objects.create_user(username="testuser", password="testpassword")
         self.client.login(username="testuser", password="testpassword")
         self.url = reverse("accounts:logout")
 
@@ -266,8 +266,16 @@ class TestLogoutView(TestCase):
         self.assertNotIn(SESSION_KEY, self.client.session)
 
 
-# class TestUserProfileView(TestCase):
-#     def test_success_get(self):
+class TestUserProfileView(TestCase):
+    def setUp(self):
+        User.objects.create_user(username="testuser", password="testpassword")
+        self.client.login(username="testuser", password="testpassword")
+
+    def test_success_get(self):
+        response = self.client.get(
+            reverse("accounts:user_profile", kwargs={"username": "testuser"})
+        )
+        self.assertEqual(response.status_code, 200)
 
 
 # class TestUserProfileEditView(TestCase):
