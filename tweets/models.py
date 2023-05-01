@@ -3,4 +3,3 @@
 
 
 # class Tweet(models.Model):
-#     user = models.ForeignKey(settings.AUTH_USER_MODEL)
