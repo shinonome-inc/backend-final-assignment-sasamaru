@@ -113,6 +113,7 @@ class TestTweetDeleteView(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(Tweet.objects.count(), 2)
 
+
 # class TestFavoriteView(TestCase):
 #     def test_success_post(self):
 
