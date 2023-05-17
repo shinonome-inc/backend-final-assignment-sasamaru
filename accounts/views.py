@@ -4,9 +4,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
+from tweets.models import Tweet
+
 from .forms import SignupForm
 from .models import User
-from tweets.models import Tweet
 
 
 class SignupView(CreateView):

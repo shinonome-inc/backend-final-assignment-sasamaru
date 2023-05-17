@@ -1,7 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse, reverse_lazy
-from django.views.generic import ListView, CreateView, DeleteView, DetailView, UpdateView
-
+from django.views.generic import CreateView, DeleteView, DetailView, ListView, UpdateView
 
 from .forms import TweetCreateForm
 from .models import Tweet
