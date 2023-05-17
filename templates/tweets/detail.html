@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Detail{% endblock %}
+
+{% block content %}
+<h1>ツイート詳細</h1>
+<div class="p-4 m-4 bg-light border border-primary rounded">
+<p><a href="{% url 'accounts:user_profile' tweet.user %}">{{ tweet.user }}</a> {{ tweet.created_at }}</p>
+<p>{{ tweet.content }}</p>
+{% if request.user == tweet.user %}
+<a href="{% url 'tweets:delete' tweet.pk %}" class = 'btn btn-primary'>削除する</a>
+<a href="{% url 'tweets:update' tweet.pk %}" class = 'btn btn-primary'>更新する</a>
+<a href="{% url 'tweets:home' %}" class = 'btn btn-primary'>戻る</a>
+
+{% endif %}
+</div>
+{% endblock %}

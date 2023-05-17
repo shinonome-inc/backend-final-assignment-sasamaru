@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block title %}Create{% endblock %}
+
+{% block content %}
+<form method="post" class="p-4 m-4 bg-light border border-primary rounded form-group">
+	{{ form.as_p }}
+	{% csrf_token %}
+	<button type="submit" class = 'btn btn-primary'>更新する</button>
+    <a href="{% url 'tweets:detail' tweet.pk %}" class = 'btn btn-primary'>戻る</a>
+</form>
+{% endblock %}
