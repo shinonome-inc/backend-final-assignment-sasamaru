@@ -39,11 +39,11 @@ class TweetDeleteView(UserPassesTestMixin, DeleteView):
 
 class TweetUpdateView(UserPassesTestMixin, UpdateView):
     model = Tweet
-    fields = ('content',)
+    fields = ("content",)
     template_name = "tweets/update.html"
 
     def get_success_url(self):
-        return reverse('tweets:detail', kwargs={'pk': self.object.id})
+        return reverse("tweets:detail", kwargs={"pk": self.object.id})
 
     def test_func(self):
         return self.request.user == self.get_object().user

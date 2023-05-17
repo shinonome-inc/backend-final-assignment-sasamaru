@@ -67,7 +67,8 @@ class TestTweetCreateView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn(
             "この値は 255 文字以下でなければなりません( {} 文字になっています)。".format(len(invalid_data["content"])),
-            form.errors["content"],)
+            form.errors["content"],
+            )
         self.assertFalse(Tweet.objects.filter(**invalid_data).exists())
 
 
@@ -88,7 +89,10 @@ class TestTweetDeleteView(TestCase):
     def setUp(self):
         self.user1 = User.objects.create_user(username="testuser1", email="test1@example.com", password="testpassword")
         self.user2 = User.objects.create_user(username="testuser2", email="test2@example.com", password="testpassword")
-        self.client.login(username="testuser1", password="testpassword",)
+        self.client.login(
+            username="testuser1",
+            password="testpassword",
+        )
         self.tweet1 = Tweet.objects.create(user=self.user1, content="tweet1")
         self.tweet2 = Tweet.objects.create(user=self.user2, content="tweet2")
         self.url1 = reverse("tweets:delete", kwargs={"pk": self.tweet1.pk})
