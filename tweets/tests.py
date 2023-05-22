@@ -114,6 +114,84 @@ class TestTweetDeleteView(TestCase):
         self.assertEqual(Tweet.objects.count(), 2)
 
 
+class TestTweetUpdateView(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser", email="test@example.com", password="testpassword")
+        self.url = reverse("tweets:create")
+        self.client.login(username="testuser", password="testpassword")
+
+    def test_success_get(self):
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+    def test_success_post(self):
+        # ツイート作成
+        valid_data = {
+            "user": self.user,
+            "content": "testcontent",
+        }
+        response = self.client.post(self.url, valid_data)
+
+        self.assertRedirects(
+            response,
+            reverse("tweets:home"),
+            status_code=302,
+            target_status_code=200,
+        )
+        self.assertTrue(Tweet.objects.filter(**valid_data).exists())
+
+        # ツイート修正
+        update_data = {
+            "user": self.user,
+            "content": "newcontent",
+        }
+        response = self.client.post(self.url, update_data)
+
+        self.assertRedirects(
+            response,
+            reverse("tweets:home"),
+            status_code=302,
+            target_status_code=200,
+        )
+
+        objs = Tweet.objects.filter(**valid_data)
+        affected_rows = objs.update(content="newcontent")
+
+        # 更新されたレコードの数を確認する
+        self.assertEqual(affected_rows, 1)
+
+        # 更新後のデータを確認するために、各オブジェクトのcontent属性にアクセスする
+        for obj in objs:
+            self.assertEqual(obj.content, "newcontent")
+
+    def test_failure_post_with_empty_content(self):
+        invalid_data = {
+            "user": self.user,
+            "content": "",
+        }
+        response = self.client.post(self.url, invalid_data)
+        form = response.context["form"]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("このフィールドは必須です。", form.errors["content"])
+        self.assertFalse(Tweet.objects.filter(**invalid_data).exists())
+
+    def test_failure_post_with_too_long_content(self):
+        invalid_data = {
+            "user": self.user,
+            "content": "a" * 256,
+        }
+        response = self.client.post(self.url, invalid_data)
+        form = response.context["form"]
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "この値は 255 文字以下でなければなりません( {} 文字になっています)。".format(len(invalid_data["content"])),
+            form.errors["content"],
+        )
+        self.assertFalse(Tweet.objects.filter(**invalid_data).exists())
+
+
 # class TestFavoriteView(TestCase):
 #     def test_success_post(self):
 
