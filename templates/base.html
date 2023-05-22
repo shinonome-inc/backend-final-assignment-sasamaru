@@ -20,7 +20,9 @@
       </div>
       <div class="navbar-nav d-flex flex-row">
         {%if request.user.is_authenticated %}
-        <!-- ユーザーがログインしていたら -->
+        {% comment %}
+          ユーザーがログインしていたら
+	      {% endcomment %}
           <a class="nav-link mx-3" href="{% url 'accounts:logout' %}">ログアウト</a>
         {% else %}
           <a class="nav-link mx-3" href="{% url 'accounts:login' %}">ログイン</a>
