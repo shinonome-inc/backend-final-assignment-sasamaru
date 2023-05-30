@@ -117,7 +117,8 @@ class TestTweetDeleteView(TestCase):
 class TestTweetUpdateView(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", email="test@example.com", password="testpassword")
-        self.url = reverse("tweets:create")
+        self.tweet = Tweet.objects.create(user=self.user, content="testtweet")
+        self.url = reverse("tweets:update", kwargs={"pk": self.tweet.pk})
         self.client.login(username="testuser", password="testpassword")
 
     def test_success_get(self):
@@ -125,44 +126,13 @@ class TestTweetUpdateView(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_success_post(self):
-        # ツイート作成
-        valid_data = {
-            "user": self.user,
-            "content": "testcontent",
-        }
-        response = self.client.post(self.url, valid_data)
+        new_content = "Updated tweet content"
+        response = self.client.post(self.url, {'content': new_content})
+        self.assertEqual(response.status_code, 302)
 
-        self.assertRedirects(
-            response,
-            reverse("tweets:home"),
-            status_code=302,
-            target_status_code=200,
-        )
-        self.assertTrue(Tweet.objects.filter(**valid_data).exists())
-
-        # ツイート修正
-        update_data = {
-            "user": self.user,
-            "content": "newcontent",
-        }
-        response = self.client.post(self.url, update_data)
-
-        self.assertRedirects(
-            response,
-            reverse("tweets:home"),
-            status_code=302,
-            target_status_code=200,
-        )
-
-        objs = Tweet.objects.filter(**valid_data)
-        affected_rows = objs.update(content="newcontent")
-
-        # 更新されたレコードの数を確認する
-        self.assertEqual(affected_rows, 1)
-
-        # 更新後のデータを確認するために、各オブジェクトのcontent属性にアクセスする
-        for obj in objs:
-            self.assertEqual(obj.content, "newcontent")
+        # ツイートが更新されたかどうかを確認する
+        updated_tweet = Tweet.objects.get(pk=self.tweet.pk)
+        self.assertEqual(updated_tweet.content, new_content)
 
     def test_failure_post_with_empty_content(self):
         invalid_data = {
@@ -186,10 +156,15 @@ class TestTweetUpdateView(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(
-            "この値は 255 文字以下でなければなりません( {} 文字になっています)。".format(len(invalid_data["content"])),
+            f"この値は 255 文字以下でなければなりません( {len(invalid_data['content'])} 文字になっています)。" ,
             form.errors["content"],
         )
         self.assertFalse(Tweet.objects.filter(**invalid_data).exists())
+
+    def test_failure_post_with_not_exist_url(self):
+        response = self.client.post(reverse("tweets:update", kwargs={"pk": 99}))
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(Tweet.objects.count(), 1)
 
 
 # class TestFavoriteView(TestCase):
