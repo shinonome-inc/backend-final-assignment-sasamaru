@@ -156,7 +156,7 @@ class TestTweetUpdateView(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertIn(
-            f"この値は 255 文字以下でなければなりません( {len(invalid_data['content'])} 文字になっています)。" ,
+            f"この値は 255 文字以下でなければなりません( {len(invalid_data['content'])} 文字になっています)。",
             form.errors["content"],
         )
         self.assertFalse(Tweet.objects.filter(**invalid_data).exists())
