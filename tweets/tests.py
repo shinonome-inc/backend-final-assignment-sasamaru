@@ -127,7 +127,7 @@ class TestTweetUpdateView(TestCase):
 
     def test_success_post(self):
         new_content = "Updated tweet content"
-        response = self.client.post(self.url, {'content': new_content})
+        response = self.client.post(self.url, {"content": new_content})
         self.assertEqual(response.status_code, 302)
 
         # ツイートが更新されたかどうかを確認する
