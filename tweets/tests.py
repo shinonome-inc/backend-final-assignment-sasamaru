@@ -31,7 +31,6 @@ class TestTweetCreateView(TestCase):
 
     def test_success_post(self):
         valid_data = {
-            "user": self.user,
             "content": "testcontent",
         }
         response = self.client.post(self.url, valid_data)
