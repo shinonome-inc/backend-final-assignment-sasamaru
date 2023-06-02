@@ -136,7 +136,6 @@ class TestTweetUpdateView(TestCase):
 
     def test_failure_post_with_empty_content(self):
         invalid_data = {
-            "user": self.user,
             "content": "",
         }
         response = self.client.post(self.url, invalid_data)
@@ -148,7 +147,6 @@ class TestTweetUpdateView(TestCase):
 
     def test_failure_post_with_too_long_content(self):
         invalid_data = {
-            "user": self.user,
             "content": "a" * 256,
         }
         response = self.client.post(self.url, invalid_data)
