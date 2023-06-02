@@ -1,1 +1,12 @@
 {% extends "base.html" %}
+
+{% block content %}
+
+<h1 style="padding: 15px 15px 30px 15px"><font color = #00bfff>こんにちは!  こちらは'Twitter Clone'です!</font></h1>
+<div>
+    <a class='btn btn-primary' href="{% url 'accounts:signup' %}">会員登録</a>
+    <a class='btn btn-primary' href="{% url 'accounts:login' %}">ログイン</a>
+    <a class='btn btn-primary' href="{% url 'accounts:logout' %}">ログアウト</a>   
+</div>
+
+{% endblock %}

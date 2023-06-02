@@ -3,6 +3,8 @@ from django.contrib.auth import SESSION_KEY, get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
+from tweets.models import Tweet
+
 User = get_user_model()
 
 
@@ -186,15 +188,6 @@ class TestSignupView(TestCase):
         self.assertIn("確認用パスワードが一致しません。", form.errors["password2"])
 
 
-class TestHomeView(TestCase):
-    def setUp(self):
-        self.url = reverse("tweets:home")
-
-    def test_success_get(self):
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-
-
 class TestLoginView(TestCase):
     def setUp(self):
         User.objects.create_user(username="testuser", password="testpassword")
@@ -267,22 +260,31 @@ class TestLogoutView(TestCase):
 
 class TestUserProfileView(TestCase):
     def setUp(self):
-        User.objects.create_user(username="testuser", password="testpassword")
-        self.client.login(username="testuser", password="testpassword")
+        self.user1 = User.objects.create_user(username="testuser1", email="test1@example.com", password="testpassword")
+        self.user2 = User.objects.create_user(username="testuser2", email="test2@example.com", password="testpassword")
+        self.url = reverse("accounts:user_profile", args=[self.user1.username])
+        self.client.force_login(self.user1)
 
     def test_success_get(self):
-        response = self.client.get(reverse("accounts:user_profile", kwargs={"username": "testuser"}))
-        self.assertEqual(response.status_code, 200)
+        Tweet.objects.create(user=self.user1, content="testcontent")
+        Tweet.objects.create(user=self.user2, content="testcontent")
+        response = self.client.get(self.url)
+
+        self.assertQuerysetEqual(response.context["tweets"], Tweet.objects.filter(user=self.user1))
 
 
-# class TestUserProfileEditView(TestCase):
-#     def test_success_get(self):
+class TestUserProfileEditView(TestCase):
+    def test_success_get(self):
+        pass
 
-#     def test_success_post(self):
+    def test_success_post(self):
+        pass
 
-#     def test_failure_post_with_not_exists_user(self):
+    def test_failure_post_with_not_exists_user(self):
+        pass
 
-#     def test_failure_post_with_incorrect_user(self):
+    def test_failure_post_with_incorrect_user(self):
+        pass
 
 
 # class TestFollowView(TestCase):

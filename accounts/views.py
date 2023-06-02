@@ -4,6 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView
 
+from tweets.models import Tweet
+
 from .forms import SignupForm
 from .models import User
 
@@ -24,7 +26,12 @@ class SignupView(CreateView):
 
 class UserProfileView(LoginRequiredMixin, DetailView):
     model = User
-    context_object_name = "profile"
     template_name = "accounts/profile.html"
     slug_field = "username"
     slug_url_kwarg = "username"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        profile_user = self.object
+        context["tweets"] = Tweet.objects.select_related("user").filter(user=profile_user).order_by("-created_at")
+        return context
